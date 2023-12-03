@@ -1,0 +1,21 @@
+{% extends 'base-back.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Add any additional stylesheets or custom styles here -->
+{% endblock %}
+
+{% block body %}
+    <div class="container d-flex align-items-center justify-content-center vh-100">
+        <div class="form-container">
+            <h1 class="mb-4">Modifier un événement</h1>
+            <a href="{{ path('evenements_show') }}" class="btn btn-secondary mb-4">Retour</a>
+
+            {{ form_start(form, {'attr': {'class': 'form-group'}}) }}
+            {{ form_widget(form) }}
+
+            <button type="submit" class="btn btn-primary form-btn">Modifier</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

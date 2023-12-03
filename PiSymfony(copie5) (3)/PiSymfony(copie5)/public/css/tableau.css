@@ -1,0 +1,20 @@
+.custom-table {
+    /* Styles pour le tableau */
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.custom-table th,
+.custom-table td {
+    /* Styles pour les cellules du tableau */
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.custom-table th {
+    /* Styles pour les en-têtes de colonne */
+    background-color:#550ddb;
+    font-weight: bold;
+    color: white; /* Couleur du texte dans les en-têtes */
+    text-align: left;
+}
