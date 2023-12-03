@@ -1,0 +1,42 @@
+index:
+    path: /
+    controller: App\Controller\DefaultController::index
+statistique:
+    path: /statistique
+    controller: App\Controller\StatistiqueController::statistique
+
+app_forgot_password_request:
+    path: '/forgot-password'
+    controller: 'App\Controller\ForgotPasswordController::request'
+    
+app_forgot_password_check_email:
+    path: '/forgot-password/check-email'
+    controller: 'App\Controller\ForgotPasswordController::checkEmail'
+    methods: ['GET']
+
+generate_pdf:
+    path: '/generate-pdf'
+    controller: 'App\Controller\SecurityController::generatePdf'
+    methods: ['GET']
+
+ajax_user_search:
+    path: /user/search
+    controller: App\Controller\UserController::search
+
+app_check_email:
+    path: '/check-email/{code}'
+    controller: 'App\Controller\ForgotPasswordController::checkEmail'
+
+export:
+    path: '/export'
+    controller: 'App\Controller\ExportController::export'
+    methods: ['GET'] 
+
+cartefidelite_index:
+    path: /cartefidelite/index
+    controller: 'App\Controller\CartefideliteController::index'
+    methods: ['GET']
+
+generate_qr_code:
+    path: /generate-qr-code/{id}
+    controller: App\Controller\CartefideliteController::generateQRCode

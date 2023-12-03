@@ -1,0 +1,73 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}Avis Client
+{% endblock %}
+
+{% block body %}
+	<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+		<div class="container">
+			<div class="az-content-left az-content-left-components">
+				<div class="component-item">
+					<label>Tables</label>
+					<nav class="nav flex-column">
+						<a href="{{ path('app_avis_index') }}" class="nav-link active">Avis</a>
+					</nav>
+				</div>
+				<!-- component-item -->
+			</div>
+			<!-- az-content-left -->
+			<div class="az-content-body pd-lg-l-30 d-flex flex-column">
+				<div class="az-content-breadcrumb">
+					<span>Manage</span>
+					<span>Client</span>
+					<span>Review</span>
+				</div>
+				<h2 class="az-content-title">
+					Edit
+
+				</h2>
+				{{ form_start(form) }}
+
+				<div class="row mb-3">
+					<label for="inputAuteur" class="col-sm-4 col-form-label">Auteur</label>
+					<div class="col-sm-8">
+						{{ form_widget(form.auteur, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.auteur, {'attr': {'class': 'text-danger'}}) }}
+					</div>
+				</div>
+
+
+				<div class="row mb-3">
+					<label for="inputContenu" class="col-sm-4 col-form-label">Contenu</label>
+					<div class="col-sm-8">
+						{{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.contenu, {'attr': {'class': 'text-danger'}}) }}
+					</div>
+				</div>
+
+				<div class="row mb-3">
+					<label for="inputNote" class="col-sm-4 col-form-label">Note</label>
+					<div class="col-sm-8">
+						{{ form_widget(form.note, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.note, {'attr': {'class': 'text-danger'}}) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8"></div>
+					<div class="col-md-4">
+						<button class="btn btn-success btn-block">{{ button_label|default('Save') }}</button>
+					</div>
+				</div>
+				{{ form_end(form) }}
+				{# <div class="row">
+									<div class="col-md-8"></div>
+									<div class="col-md-4">
+										<a class="col-md-3">
+											{{ include('avis/_delete_form.html.twig') }}</a>
+									</div>
+								</div> #}
+
+
+			</div>
+		</div>
+	{% endblock %}

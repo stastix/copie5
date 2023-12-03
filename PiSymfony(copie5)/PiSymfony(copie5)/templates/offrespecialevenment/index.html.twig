@@ -1,0 +1,119 @@
+{% block title %}Offrespecialevenment index
+{% endblock %}
+
+{% extends 'base-back.html.twig' %}
+
+{% block body %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!('Notification' in window)) {
+            console.log('This browser does not support desktop notifications.');
+            return;
+        }
+
+        if (Notification.permission === 'granted') {
+            showNotification();
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(function(permission) {
+                if (permission === 'granted') {
+                    showNotification();
+                }
+            });
+        }
+    });
+
+    function showNotification() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var message = urlParams.get('message');
+        if (message) {
+            var notification = new Notification(message);
+
+            notification.addEventListener('click', function() {
+                window.location.href = '{{ path("app_offrespecialevenment_index") }}';
+            });
+        }
+    }
+</script>
+
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+	<script>
+		$(document).ready(function () {
+var dataTable = $('#dataTable').DataTable();
+
+function sortTable(columnIndex, order) {
+dataTable.order([columnIndex, order]).draw();
+}
+
+$('#sortById').on('click', function () {
+sortTable(0, 'asc');
+});
+
+$('#sortByTitre').on('click', function () {
+sortTable(1, 'asc');
+});
+});       
+
+   function searchById() {
+        var offreId = prompt('Enter the ID of the offre:');
+        if (offreId) {
+            window.location.href = '{{ path("app_offrespecialevenment_show", { "idoffrespecialevenment": "__id__" }) }}'.replace('__id__', offreId);
+        }
+    }
+    </script>
+
+   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+
+    <div class="text-center">
+        <button class="btn btn-primary btn-lg" onclick="searchById()">Search by ID</button>
+        <a class="btn btn-success btn-lg" href="{{ path('app_offrespecialevenment_new') }}">Create New</a>
+    </div>
+	<div class="container mt-4">
+		<table class="table table-striped" id="dataTable">
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Idoffrespecialevenment</th>
+					<th scope="col">Titre</th>
+					<th scope="col">Description</th>
+					<th scope="col">DateDepart</th>
+					<th scope="col">Prix</th>
+					<th scope="col">Categorie</th>
+					<th scope="col">GuideId</th>
+					<th scope="col">Destination</th>
+					<th scope="col">Image</th>
+					<th scope="col">Niveau</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for offrespecialevenment in offrespecialevenments %}
+					<tr>
+						<td>{{ offrespecialevenment.idoffrespecialevenment }}</td>
+						<td>{{ offrespecialevenment.titre }}</td>
+						<td>{{ offrespecialevenment.description }}</td>
+						<td>{{ offrespecialevenment.dateDepart ? offrespecialevenment.dateDepart|date('Y-m-d') : '' }}</td>
+						<td>{{ offrespecialevenment.prix }}</td>
+						<td>{{ offrespecialevenment.categorie }}</td>
+						<td>{{ offrespecialevenment.guideId }}</td>
+						<td>{{ offrespecialevenment.destination }}</td>
+						<td>{{ offrespecialevenment.image }}</td>
+						<td>{{ offrespecialevenment.niveau }}</td>
+						<td>
+							<a class="btn btn-info btn-sm" href="{{ path('app_offrespecialevenment_show', {'idoffrespecialevenment': offrespecialevenment.idoffrespecialevenment}) }}">Show</a>
+							<a class="btn btn-primary btn-sm" href="{{ path('app_offrespecialevenment_edit', {'idoffrespecialevenment': offrespecialevenment.idoffrespecialevenment}) }}">Edit</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="11" class="text-center">No records found</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>{% endblock %}
