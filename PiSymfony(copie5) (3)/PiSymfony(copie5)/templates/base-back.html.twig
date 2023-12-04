@@ -43,7 +43,7 @@ gtag('config', 'UA-90680653-2');
 		<div class="az-header">
 			<div class="container">
 				<div class="az-header-left">
-					<a href="index.html" class="az-logo">
+					<a href="" class="az-logo">
 						<span></span>
 						EpicJourneys</a>
 					<a href="" id="azMenuShow" class="az-header-menu-icon d-lg-none">
@@ -68,15 +68,16 @@ gtag('config', 'UA-90680653-2');
 							<nav class="az-menu-sub"> 
 							  <a href="{{ path('evenements_show') }}" class="nav-link"><i class="typcn typcn-chart-area-outline"></i> Evenement</a>
 							  <a href="{{ path('app_offrespecialevenment_index') }}" class="nav-link">special event</a>
-							  <a href="{{ path('addevent') }}">event saif</a>
+							  <a href="{{ path('addevent') }}">event saif</a> 
+				
 							</nav>
-						 
+						  
 						<li class="nav-item">
 						  <a href="" class="nav-link with-sub"><i class="typcn typcn-document"></i> services</a>
 						  <nav class="az-menu-sub">
-							<a href="page-signin.html" class="nav-link">reclamation</a>
-							<a href="page-signup.html" class="nav-link">demende</a>
-						  </nav>
+							<a href="{{ path('reclamation_show') }}" class="nav-link">Complaints</a>
+							<a href="{{ path('demande_show') }}" class="nav-link">Requests</a>
+						</nav>
 						</li>
 						<li class="nav-item">
 						  <a href=" {{ path('sponsor_show') }}" class="nav-link"></i> sponsor</a>

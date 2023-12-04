@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+   
+{% block body %}
+
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+	
+
+<style>
+    .h-3 {
+        height: 1rem;
+        width: 1rem;
+    }
+</style>
+
+<section class="packages pt-5">
+    <div class="container py-lg-4 py-sm-3">
+    <h2 class="heading text-capitalize text-center">{% trans %}Add a personalized Requests{% endtrans %}</h2>
+
+    		<div class="row">
+    <div class="col-lg-6 offset-lg-3">
+        {{ form_start(f) }}
+
+        <div class="form-group">
+            {{ form_widget(f.destination, { 'attr': {'class': 'form-control', 'placeholder': 'Destination'} }) }}
+        </div>
+        <div class="form-group">
+            {{ form_widget(f.type, { 'attr': {'class': 'form-control', 'placeholder': 'Type of Trip'} }) }}
+        </div>
+        <div class="form-group">
+            {{ form_widget(f.duration, { 'attr': {'class': 'form-control', 'placeholder': 'Duration in days'} }) }}
+            {% if f.duration.vars.errors|length > 0 %}
+                <div class="alert alert-danger">
+                    {{ f.duration.vars.errors|first.message }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form_widget(f.description, { 'attr': {'class': 'form-control', 'placeholder': 'Description'} }) }}
+        </div>
+
+        <div class="btn btn-block sent-butnn">
+            {{ form_widget(f.Add) }}
+        </div>
+
+        {% for flashMessage in app.flashes('successC') %}
+            <div class="alert alert-success">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+
+        {{ form_end(f) }}
+    </div>
+</div>
+<div class="container py-lg-4 py-sm-3">
+        <h2 class="heading text-capitalize text-center">{% trans %}Popular Requests{% endtrans %}</h2>
+        <p class="text mt-2 mb-5 text-center">{% trans %}Our popular demands requested by you.{% endtrans %}</p>
+        
+        <div class="row">
+            {% for demande in demands %}
+            <div class="col-lg-3 col-sm-6 mb-5">
+                <div class="image-tour position-relative"></div>
+                <div class="package-info">
+                    <h6 class="mt-1"><span class="fa fa-map-marker mr-2"></span>{{demande.destination}}</h6>
+                    <h5 class="my-2">{{demande.type}}</h5>
+                    <p class="">{{demande.description}}</p>
+                    <ul class="listing mt-3">
+                        <li><span class="fa fa-clock-o mr-2"></span>{% trans %}Duration : {% endtrans %}<span>{{demande.duration}}</span><span> Days</span></li>
+                        <li>
+                            <a class="flex w-fit like-button" href="{{ path('like.demande', {'id': demande.id}) }}" data-action="like" data-nb="{{ demande.likes|length }}">
+    {% if user in demande.likes %}
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 filled" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 01-.8 2.4z"></path>
+        
+		                      </svg>
+            {% else %}
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 unfilled" fill="#ffffff" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7"></path>
+                            </svg>
+           {% endif %}
+    <span class="ml-2">{{ demande.likes|length }} {% trans %}Likes{% endtrans %}</span>
+</a>
+                        </li>
+                    </ul>
+                    <a href="{{ path('demande_delete', {'id': demande.id}) }}">{% trans %}delete {% endtrans %}/</a>
+                    <a href="{{ path('demande_edit', {'id': demande.id}) }}">{% trans %}edit{% endtrans %}</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+
+
+	</div>
+</section>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(document).on('click', '.like-button', function(e) {
+            e.preventDefault();
+            
+            var url = $(this).attr('href');
+            var likeButton = $(this);
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                dataType: 'json',
+                success: function(data) {
+         
+                    likeButton.attr('data-nb', data.nbLike);
+                    likeButton.find('span').text(data.nbLike + ' {% trans %}Likes{% endtrans %}');
+                    
+           
+                    if (data.message === 'Le like a été ajouté.') {
+                        likeButton.html('<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 filled" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 01-.8 2.4z"></path></svg>' + data.nbLike + ' {% trans %}Likes{% endtrans %}');
+                    } else {
+                        likeButton.html('<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 unfilled" fill="#ffffff" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7"></path></svg>' + data.nbLike + ' {% trans %}Likes{% endtrans %}');
+                    }
+                },
+                error: function(error) {
+                    console.log('Error:', error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,175 @@
+{%extends 'base-back.html.twig'%} 
+{%block body %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+    {% block title %}
+
+    <title>complaints</title>
+
+ {%  endblock %}
+
+
+    {% block stylesheet %}
+
+    <style>
+            /* Add custom styles for the table */
+            table {
+                max-width: 80%; /* Set a maximum width for the table */
+                margin: auto;   /* Center the table */
+            }
+        </style>
+
+    {% include 'admin/inc/stylesheet.html.twig' %}
+
+ {%  endblock %}
+ {% block meta %}
+
+ {% include 'admin/inc/meta.html.twig' %}
+
+{%  endblock %}
+ 
+  </head>
+  <body>
+
+
+  
+   {% block content %}
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-90680653-2');
+</script>
+
+    <h1>Complaints List</h1>
+   Search by : 
+			2> General Management or CEO
+			3> After-Sales Service Department
+			4> Reservation Manager or Department
+			5> Customer Service Department
+
+  <input type="text" id="search" class="form-control" placeholder="Complaint target">
+   </div>
+
+
+ <div>
+    <table id ="t" class="table" border="2px">
+        <thead class"thead-dark">
+            <tr>
+                
+                <th>User Name</th>
+                <th>Compaint Target</th>
+                <th>Date</th>
+                <th>Message</th>
+                <th>State</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody id="all">
+        {% for flashMessage in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ flashMessage }}
+            </div>
+        {% endfor %}
+
+        {% for reclamation in reclamations %}
+            <tr>
+                <td>{{ reclamation.UseName.nom }}</td>
+                <td>{{reclamation.CibleReclamation}}</td>
+                <td>{{ reclamation.dateReclamation |date('F d, Y') }}</td>
+                <td>{{ reclamation.TextReclamation  }}</td>
+                <td>{{ reclamation.EtatReclamation  }}</td>
+                <td>
+                    <a href="{{ path('reclamation_mark', {'id': reclamation.id}) }}">Mark as read /</a>        
+                    <a href="{{ path('send_mail', {'id': reclamation.id}) }}">Send Mail</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    <tbody id="searchtab" ></tbody>
+    </table>
+
+     <a href="{{ path('app_default2') }}" class="statistics-link">   View Statistics   </a>
+</div>
+
+<style>
+    .statistics-link {
+        font-size: 18px; /* Adjust the font size as needed */
+        font-weight: bold; /* Make the text bold if desired */
+        color: #4285f4; /* Set the link color to a specific color */
+        /* Add any other styles you want */
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+      $("#search").keyup(function(e) {
+          var Value = $(this).val();
+        
+
+          $.ajax({
+            url: "{{ path('searchCible') }}",
+              type: 'GET',
+              
+              data: {'search': Value},
+              success: function(retour) {
+                
+                if(retour){
+
+                    
+
+                      $('#t tbody#searchtab').empty();
+                      $.each(JSON.parse(retour), function(i,obj){
+                        $('#t tbody#all').hide();
+                        $('#t tbody#searchtab').append('<tr><td> '+obj.UseName.nom+' </td><td> '+obj.CibleReclamation+' </td><td> '+obj.dateReclamation+' </td><td> '+obj.TextReclamation+' </td><td> '+obj.EtatReclamation+' </td></tr>');
+
+
+                      });      }
+                      else {
+                        $('#t tbody#all').show();
+                        $('#t tbody#searchtab').empty();
+                        $('#t tbody#searchtab').fadeIn('fast');
+                      }
+
+                        
+              },
+          });
+          return false;
+      });
+  });
+</script>
+<script src="{{ asset('js/jquery.cookie.js') }}"></script>
+
+
+
+
+
+
+
+  
+  {%  endblock %}
+
+  
+
+   
+   {% block script %}
+
+   {% include 'admin/inc/script.html.twig' %}
+  
+  {%  endblock %}
+
+  </body>
+</html>
+{%endblock%}

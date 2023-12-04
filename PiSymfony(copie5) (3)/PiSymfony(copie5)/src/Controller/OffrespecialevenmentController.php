@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/offrespecialevenment')]
 class OffrespecialevenmentController extends AbstractController
 {
-    private NotifierInterface $notifier;
 
     public function __construct(NotifierInterface $notifier)
     {

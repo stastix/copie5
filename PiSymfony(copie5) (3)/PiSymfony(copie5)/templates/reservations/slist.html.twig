@@ -148,45 +148,46 @@
 				</div>
 				{% endfor %} 
 				
-				<div class="col-lg-6 col-md-6 contact-left-form">
-					<form action="{{ path('slist_evennement_choix') }}" method="post">
-						
-						<div class="col-sm-6 form-group contact-forms">
-							<select class="form-control" name="dest">
-								{% for eventd in eventsD %}
-								<option>{{ eventd}}</option>
-								
-								{% endfor %} 
-								<option>5 or more</option>
-							</select>
-						</div>
-						<div class="col-sm-6 form-group contact-forms">
-							<select class="form-control" name="type">
-								{% for eventd in baw %}
-								<option>{{ eventd}}</option>
-								
-								{% endfor %} 
-								<option>5 or more</option>
-							</select>
-						</div>
-						<div class="row">
-							<div class="col-lg-3 col-sm-6 mb-5">
-						<button class="btn btn-block sent-butnn">found</button>
-							</div>
-						</form>
-						<form action="{{ path('slist_evennement') }}" method="post">
-							<div class="col-lg-4 col-sm-6 mb-5">
-								<button class="btn btn-block sent-butnn"> view all</button>
-									</div>
-								</form>
-					</div >
+				
 					
-				</div>
+			
 			</div>
 			
 		</div>
 		
 	</section>
+
+	<style>
+        /* Style for the text */
+        .niveau-text {
+            font-weight: bold;
+        }
+
+        /* Style for bronze level */
+        .niveau-bronze {
+            color: #cd7f32; /* Bronze color */
+        }
+
+        /* Style for silver level */
+        .niveau-silver {
+            color: #c0c0c0; /* Silver color */
+        }
+
+        /* Style for gold level */
+        .niveau-gold {
+            color: #ffd700; /* Gold color */
+        }
+    </style>
+
+
+	{% if is_granted('ROLE_CLIENT') or is_granted('ROLE_GUIDE') or is_granted('ROLE_ADMIN') %} 
+	<div class="view-package text-center mt-4">
+		<h3 class="heading text-capitalize text-center"> Couldn't find an event you like?</h3>
+		<p class="text mt-2 mb-1 text-center"> Feel free to infuse your personal touch by expressing your preferences for an event you'd love to partake in with us. </p>
+<a href="{{ path('add_demande') }}">Request An Event</a>
+ </div>
+{% endif %}
+
 
 
 
@@ -200,7 +201,7 @@
 						<div class="col-md-3 col-sm-6 col-6 destinations-grids text-center">
 							<h4 class="destination mb-3">{{ offrespecialevenment.titre }}</h4>
 							<div class="image-position position-relative"> 
-								<img src="{{ asset('img/' ~ offrespecialevenment.image) | default(asset('hero-bg.jpg')) }}" class="img-fluid" alt="{{ offrespecialevenment.destination }}">
+								<img src="{{ asset(offrespecialevenment.image) }}" class="img-fluid" alt="{{ offrespecialevenment.destination }}">
 								<div class="rating">
 									<ul>
 										<li><span class="fa fa-star"></span></li>
@@ -214,8 +215,7 @@
 							<div class="destinations-info">
 								<div class="caption mb-lg-3">
 									<h4>{{ offrespecialevenment.destination }}</h4>
-									
-									<a href="{{ path('sbooking', {'id': offrespecialevenment.idoffrespecialevenment}) }}">Book Now</a>
+									<a href="{{ path('sbooking2', {'id': offrespecialevenment.idoffrespecialevenment}) }}">Book Now</a>
 								</div>
 								<div class="rating">
 									<!-- Replace the stars with badge icons or images -->
@@ -238,6 +238,77 @@
 		</div>
 	</section>
 	
+
+
+
+
+
+
+	<div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="closest-event mb-4">
+                    <h2 class="text-center">Closest Event</h2>
+                    {% if closestEvent is defined %}
+                        <div class="alert alert-info text-center" role="alert">
+                            <strong>{{ closestEvent.getTitre() }}</strong> is the closest event with a price of {{ closestEvent.getPrix() }}.
+                        </div>
+                    {% else %}
+                        <p class="text-center">No upcoming events found.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="text-center">
+                    <h2 class="mb-4">Low Budget Events</h2>
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const data = {{ data|json_encode|raw }};
+
+        const labels = Object.keys(data);
+        const prices = Object.values(data);
+
+        const ctx = document.getElementById('priceChart').getContext('2d');
+        const priceChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Prix',
+                    data: prices,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
 	{% endblock %}
 
 	

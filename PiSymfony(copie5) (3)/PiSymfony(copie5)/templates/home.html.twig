@@ -45,9 +45,39 @@
         <div class="container">
             <!-- nav -->
             <nav class="py-md-4 py-3 d-lg-flex">
-                <div id="logo">
-                    <h1 class="mt-md-0 mt-2"> <a href=""><span class="fa fa-map-signs"></span> Grand Tour </a></h1>
+                <div id="logo2">
+                    <h1 class="mt-md-0 mt-2" style="font-size: 25px !important;"> <span class="fa fa-plane"></span>  EpicJourneys </h1>
                 </div>
+                
+                
+                <style>
+                    #logo2 h1 {
+                        font-size: 25px !important;
+                        color: white !important;
+                    }
+            
+                    .menu {
+                        list-style: none;
+                        display: flex;
+                        margin: 0;
+                        padding: 0;
+                    }
+            
+                    .menu li {
+                        margin-right: 10px;
+                    }
+            
+                    .menu a {
+                        text-decoration: none;
+                        color: white;
+                        font-size: 18px; /* Adjust the font size for menu items */
+                        transition: color 0.3s ease-in-out;
+                    }
+            
+                    .menu a:hover {
+                        color: #abcdef; /* Change the color on hover */
+                    }
+                </style>
                         <label for="drop" class="toggle">
                     <span class="fa fa-bars"></span>
                 </label>
@@ -56,20 +86,21 @@
                 <ul class="menu ml-auto mt-1"> 
                     <li class=""><a href="{{ path('app_user') }}">Home</a></li>
 
-                    <li class="">
-                        <a href="#">Notice</a>
-                    </li>
+                   
                     <li class="">
                         <a href="{{ path('slist_evennement') }}">Events</a>
-                    </li>
+                    </li> 
+                  
+
                     <li class="">
                         <a href="{{ path('acheter_product') }}">Shop</a>
                     </li>
+
+                    {% if is_granted('ROLE_CLIENT') or is_granted('ROLE_GUIDE') or is_granted('ROLE_ADMIN') %} 
                     <li class="">
-                        <a href="#">Services</a>
+                        <a href="{{ path('add_reclamation') }}">Complaints</a>
                     </li>
 
-                    {% if is_granted('ROLE_CLIENT') or is_granted('ROLE_GUIDE') or is_granted('ROLE_ADMIN') %}
                         <li class="">
                             <a href="{{ path('app_user_profil') }}">Profile</a>
                         </li> 
@@ -118,7 +149,7 @@
                                     <h3 class="text-wh">Never let your memories be greater than your dreams.</h3>
                                     <h4 class="text-wh">tristique senectus et netus et malesuada</h4>
                                     <div class="buttons mt-4">
-                                        <a href="about.html" class="btn mr-2">About Us</a>
+                                        <a href="{{ path('app_about') }}" class="btn mr-2">About Us</a>
                                         <a href="booking.html" class="btn">Book a Tour</a>
                                     </div>
                                 </div>
@@ -252,13 +283,14 @@
             <div class="view-package text-center mt-4">
                 {% if is_granted('ROLE_CLIENT') or is_granted('ROLE_GUIDE') or is_granted('ROLE_ADMIN') %}
                 {# Redirect to app_specialEvent if the user has the specified roles #}
-                {% set redirectRoute = 'app_specialEvent' %}
+                {% set redirectRoute = 'slist_evennement' %}
+
             {% else %}
                 {# Redirect to app_specialEvent_home if the user doesn't have the specified roles #}
                 {% set redirectRoute = 'app_specialEvent_home' %}
             {% endif %}
             
-            <a href="{{ path(redirectRoute) }}">View All Packages</a>
+            <a href="{{ path(redirectRoute) }}">our Special Events</a>
                     </div>
         </div>
     </section>

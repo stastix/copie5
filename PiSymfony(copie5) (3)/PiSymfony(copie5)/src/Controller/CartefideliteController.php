@@ -99,10 +99,16 @@ public function index(CartefideliteRepository $cartefideliteRepository): Respons
     $result = $customQrCodeBuilder
     ->size(400)
     ->margin(20)
-    ->data("http://192.168.1.17:8000/cartefidelite/".$id)
+    ->data("http://172.17.1.122:8000/cartefidelite/".$id)
     ->build();
     $response = new QrCodeResponse($result);
     return $response;
     }
-    
+
+    #[Route('/', name: 'app_back_index', methods: ['GET'])] 
+public function indexBack(): Response
+{  
+    return $this->render('base-back.html.twig');
+}
+
 }

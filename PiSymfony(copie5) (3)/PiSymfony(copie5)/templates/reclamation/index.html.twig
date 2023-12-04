@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+   
+{% block body %}
+
+<section class="contact py-5">
+    <style>
+        .custom-table {
+            border: 1px solid #ddd; /* Add a border to the table */
+            width: 100%;
+            margin-top: 20px; /* Add some margin to the top */
+        }
+
+        .custom-table th, .custom-table td {
+            border: 1px solid #ddd; /* Add borders to table cells */
+            padding: 8px; /* Add padding to table cells */
+            text-align: left; /* Align text to the left */
+        }
+    </style>
+    <div class="container py-lg-5 py-sm-3">
+        <h2 class="heading text-capitalize text-center mb-sm-5 mb-4">{% trans %} You can write to us your concerns{% endtrans %}</h2>
+
+        <div class="contact-grids mt-5">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 contact-left-form ml-auto">
+                    {{ form_start(f)}}
+                    <div class="col-md-12 form-group contact-forms">
+                        {{ form_widget(f.CibleReclamation,{ 'attr': {'class': 'form-control', 'placeholder': 'Complaint target'} })}}
+                    </div>
+                   <div class="col-md-12 form-group contact-forms">
+    {{ form_widget(f.dateReclamation, {'attr': {'placeholder': 'Select date'}}) }}
+</div>
+
+                    <div class="col-md-12 form-group contact-forms">
+                        {{ form_widget(f.TextReclamation, { 'attr': {'class': 'form-control', 'placeholder': 'Message'} })}}
+                    </div>
+                    <div class="btn btn-block sent-butnn">
+                        {{ form_widget(f.Add)}}
+                    </div>
+					{% for flashMessage in app.flashes('successC') %}
+                             <div class="alert alert-success">
+                              {{ flashMessage }}
+                                </div>
+                                   {% endfor %}
+                    {{ form_end(f)}}
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>{% trans %}Complaint target{% endtrans %}</th>
+                                <th>{% trans %}Date{% endtrans %}</th>
+                                <th>{% trans %}Message{% endtrans %}</th>
+								<th>{% trans %}State{% endtrans %}</th>
+                                <th>{% trans %}Action{% endtrans %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reclamation in reclamations %}
+                                <tr>
+                                    <td>{{ reclamation.CibleReclamation }}</td>
+                                    <td>{{ reclamation.dateReclamation|date('Y-m-d') }}</td>
+                                    <td>{{reclamation.TextReclamation}}</td>
+									<td>{{ reclamation.EtatReclamation }}</td>
+
+                                    <td>
+                                        <a href="{{ path('reclamation_delete', {'id': reclamation.id}) }}">{% trans %}delete {% endtrans %}/</a>
+                                        <a href="{{ path('reclamation_edit', {'id': reclamation.id}) }}">{% trans %}edit{% endtrans %}</a>
+                                         <a href="{{ path('app_home3', {'id': reclamation.id}) }}">translate</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6">no reclamation</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- //Contact -->
+
+
+
+<!-- map -->	
+<div class="map p-2">
+	<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d158857.728106568!2d-0.24168153701090248!3d51.52877184090542!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47d8a00baf21de75%3A0x52963a5addd52a99!2sLondon%2C+UK!5e0!3m2!1sen!2sin!4v1544074523717"></iframe>
+</div>
+<!-- //map -->
+{% endblock %}

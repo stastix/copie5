@@ -6,8 +6,10 @@ namespace App\Controller;
 
 use App\Entity\Cartefidelite;
 use App\Repository\CartefideliteRepository;
+use App\Repository\ReservationRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Query\Expr\Math;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
@@ -89,16 +91,21 @@ class CartefideliteUserController extends AbstractController
         }  
 
 
-        #[Route('/user/deduirePts/{id}/{prix}', name: 'app_cartefidelite_deduire')]
-        public function UsePts($id, UserRepository $repo, $prix)
+        #[Route('/user/deduirePts/{id}/{prix}', name: 'achref')]
+        public function UsePts(ReservationRepository $reservationRepository,$id, UserRepository $repo, $prix, ManagerRegistry $manager)
         {$user= $this->getUser();
+            $reservation=$reservationRepository->find($id);
+            $em1 = $manager->getManager();
             $cartefidelite = $user->getCartefidelite();
             $newValue = $prix - ($cartefidelite->getPtsfidelite() / 100); 
             $prix = $newValue;
             $cartefidelite->setPtsfidelite(0); // Set points to zero
             $em = $this->getDoctrine()->getManager();
             $em->flush();
-                return $this->redirectToRoute('app_cartefidelite_user');                    
+            $reservation->setPrixR($prix);
+            $em1->persist($reservation);
+            $em1->flush();
+            return $this->render('operation/cart.html.twig',['fadit'=> $reservation]);                  
 
     }
 }

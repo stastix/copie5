@@ -14,13 +14,14 @@ use App\Entity\Reservation;
 use App\Form\CommentsType;
 use App\Repository\UserRepository;
 use App\Repository\CommentsRepository;
+use App\Repository\OffrespecialevenmentRepository;
 use App\Repository\ReservationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-
+use App\Repository\EvenementsRepository;
 class ReservationsController extends AbstractController
 {
 
@@ -40,8 +41,18 @@ class ReservationsController extends AbstractController
     }
     
     #[Route('/reservations/list', name: 'slist_evennement')]
-    public function slist(\App\Repository\OffrespecialevenmentRepository $offrespecialevenmentRepository,UserRepository $userRepository,EventssaifRepository $eventRepository): Response
+    public function slist(EvenementsRepository $evenementsRepository,\App\Repository\OffrespecialevenmentRepository $offrespecialevenmentRepository,UserRepository $userRepository,EventssaifRepository $eventRepository): Response
     {
+
+
+        $lowBudgetEvents = $evenementsRepository->findLowBudgetEvents();
+        $data = [];
+    foreach ($lowBudgetEvents as $event) {
+        $data[$event->getTitre()] = $event->getPrix();
+    }
+    $closestEvent = $evenementsRepository->findClosestEvent();
+
+
         $user = $this->getUser();
     
         if (!$user || !$user->getCartefidelite()) {
@@ -49,7 +60,8 @@ class ReservationsController extends AbstractController
             'events' => $eventRepository->findAll(),
             'eventsD' => $eventRepository->findAllDistinctdestination(),
             'baw'=> $eventRepository->findAllDistinctTypes(),
-           
+            'data' => $data,
+            'closestEvent' => $closestEvent,
             
         
         ]);        }
@@ -64,6 +76,8 @@ class ReservationsController extends AbstractController
             'eventsD' => $eventRepository->findAllDistinctdestination(),
             'baw'=> $eventRepository->findAllDistinctTypes(),
             'offrespecialevenments' => $specialEvents,
+            'data' => $data,
+            'closestEvent' => $closestEvent,
         ]);
     }
 
@@ -94,11 +108,46 @@ class ReservationsController extends AbstractController
     
         return $response2;
     }
- 
+    #[Route('/reservations/list/booking2/{id}', name: 'sbooking2')]
+    public function addcomment2(OffrespecialevenmentRepository $offrespecialevenmentRepository ,Request $request, $id, ManagerRegistry $manager, EventssaifRepository $event, CommentsRepository $commentsRepository): Response
+    {
+        $event2= $offrespecialevenmentRepository->find($id) ;
+        $image = $event2->getImage() ;
+        $events = $event->find($id);
+        $prix=$event2->getPrix();
+       // $image = $events->getImagesaif();
+      //  $prix=$events->getPrixsaif();
+        $em = $manager->getManager();
+        $user = $this->getUser();
+        $Comments = new Comments();
+    
+        $form = $this->createForm(CommentsType::class, $Comments);
+        $form->handleRequest($request);
+    
+        if ($form->isSubmitted() && $form->isValid()) {
+            $Comments->setIdEvent($id);
+            $Comments->setEventssaif($events);
+            $Comments->setUserName($user->getUsername());
+          
+            $em->persist($Comments);
+            $em->flush();
+            $this->addFlash('successC', 'Comment ajouté');
+            return $this->redirectToRoute('sbooking', ['id' => $id]);
+        }
+    
+        return $this->render('reservations/sbooking.html.twig', [
+            'comments' => $commentsRepository->findByidevent($id),
+            'f' => $form->createView(),
+            'id' => $id,
+            'im' => $image,
+            'pr' => $prix
+        ]);
+    }
     
     #[Route('/reservations/list/booking/{id}', name: 'sbooking')]
     public function addcomment(Request $request, $id, ManagerRegistry $manager, EventssaifRepository $event, CommentsRepository $commentsRepository): Response
-    {
+    { $user = $this->getUser();
+        $usrid = $user->getId();
         $events = $event->find($id);
         $image = $events->getImagesaif();
         $prix=$events->getPrixsaif();
@@ -134,7 +183,7 @@ class ReservationsController extends AbstractController
     public function editBook(Request $request, ManagerRegistry $manager, $id, CommentsRepository $commentsRepository): Response
     {
         $user = $this->getUser();
-        $usrid = $user->getId();
+        $usrid = $user->getUserIdentifier();
 
         $em = $manager->getManager();
 
@@ -193,10 +242,10 @@ class ReservationsController extends AbstractController
      
     }
     #[Route('/reservations/add/{id}', name: 'add_reservation')]
-    public function addreservation(Request $request,$id, ManagerRegistry $manager,EventssaifRepository $eventssaifRepository  , CommentsRepository $commentsRepository): Response
+    public function addreservation(UserRepository $repo,request $request,$id, ManagerRegistry $manager,EventssaifRepository $eventssaifRepository  , CommentsRepository $commentsRepository): Response
     {
-
-
+        $user = $this->getUser(); 
+        $usrid = $user->getId();
         
         $fadit=$eventssaifRepository->find($id);
         $basePrice=$fadit->getPrixsaif();
@@ -231,11 +280,23 @@ class ReservationsController extends AbstractController
         else {
         $reservation->setPrixR($basePrice);
         }
-        $reservation->setUserId(2);
+        $reservation->setUserId($usrid );
       
         $em1->persist($reservation);
         $em1->flush();
-        $this->addFlash('successR', 'Réservation effectuée avec succès!');
+       
+
+
+
+        $cartefidelite = $user->getCartefidelite();  
+        $incrementValue = round($basePrice / 100);
+        $cartefidelite->setPtsfidelite($cartefidelite->getPtsfidelite() + $incrementValue);
+        $em = $this->getDoctrine()->getManager(); 
+        $em->flush(); 
+       
+
+
+
         return $this->render('operation/cart.html.twig',['fadit'=> $reservation]);
         
  

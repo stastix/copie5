@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-90680653-2');
+    </script>
+
+    {% block title %}
+
+    <title>complaints</title>
+
+ {%  endblock %}
+
+
+    {% block stylesheet %}
+
+    <style>
+            /* Add custom styles for the table */
+            table {
+                max-width: 80%; /* Set a maximum width for the table */
+                margin: auto;   /* Center the table */
+            }
+        </style>
+
+    {% include 'admin/inc/stylesheet.html.twig' %}
+
+ {%  endblock %}
+ {% block meta %}
+
+ {% include 'admin/inc/meta.html.twig' %}
+
+{%  endblock %}
+
+
+    
+  </head>
+  <body>
+
+    {% block header %}
+
+    {% include 'admin/inc/header.html.twig' %}
+   
+   {%  endblock %}
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+{# Statistics block #}
+{% block statistics %}
+    <div class="statistics-container">
+        <h2>Statistics</h2>
+        <canvas id="complaintChart" width="300" height="120"></canvas>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx = document.getElementById('complaintChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [{% for target, percentage in complaintStatistics %}"{{ target }}",{% endfor %}],
+                    datasets: [{
+                        label: 'Complaint Statistics',
+                        data: [{% for target, percentage in complaintStatistics %}{{ percentage }},{% endfor %}],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block footer %}
+
+    {% include 'admin/inc/footer.html.twig' %}
+   
+   {%  endblock %}
+
+
+   
+   {% block script %}
+
+   {% include 'admin/inc/script.html.twig' %}
+  
+  {%  endblock %}
+
+  </body>
+</html>
