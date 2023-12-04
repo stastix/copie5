@@ -1,0 +1,66 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}Statistiques sur le Genre{% endblock %}
+
+{% block body %}
+    <h1>Statistiques sur le Genre</h1>
+
+    <p>Total d'utilisateurs : {{ totalUtilisateurs }}</p>
+    <p>Hommes : {{ hommes }} ({{ pourcentageHommes }}%)</p>
+    <p>Femmes : {{ femmes }} ({{ pourcentageFemmes }}%)</p>
+
+    <!-- Ajoutez un élément canvas pour le graphique circulaire -->
+    <canvas id="genreChart" width="200" height="200"></canvas>
+
+    <!-- Ajoutez un espace entre les deux graphiques -->
+    <div style="margin-top: 20px;"></div>
+
+    <!-- Ajoutez un élément canvas pour le graphique de barre -->
+    <canvas id="barChart" width="1" height="1"></canvas>
+
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+
+    <script>
+        // Récupérez les données depuis Symfony pour le graphique circulaire
+        var hommes = {{ hommes }};
+        var femmes = {{ femmes }};
+        var pourcentageHommes = {{ pourcentageHommes }};
+        var pourcentageFemmes = {{ pourcentageFemmes }};
+
+        // Créez un tableau de données pour le graphique circulaire
+        var pieData = {
+            labels: ['Hommes', 'Femmes'],
+            datasets: [{
+                data: [hommes, femmes],
+                backgroundColor: ['blue', 'pink'], // Couleurs pour les segments
+            }],
+        };
+
+        // Récupérez le contexte du canevas pour le graphique circulaire
+        var pieCtx = document.getElementById('genreChart').getContext('2d');
+
+        // Créez le graphique circulaire en utilisant Chart.js
+        var pieChart = new Chart(pieCtx, {
+            type: 'pie',
+            data: pieData,
+        });
+
+        // Récupérez les données depuis Symfony pour le graphique de barre
+        var barData = {
+            labels: ['Hommes', 'Femmes'],
+            datasets: [{
+                data: [hommes, femmes],
+                backgroundColor: ['blue', 'pink'], // Couleurs pour les barres
+            }],
+        };
+
+        // Récupérez le contexte du canevas pour le graphique de barre
+        var barCtx = document.getElementById('barChart').getContext('2d');
+
+        // Créez le graphique de barre en utilisant Chart.js
+        var barChart = new Chart(barCtx, {
+            type: 'bar',
+            data: barData,
+        });
+    </script>
+{% endblock %}

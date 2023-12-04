@@ -1,0 +1,41 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    twilio.sid: 'AC5db532fc50d8e3c859ac48f7a83aaa38'
+    twilio.token: '758ec5ec485362f1d5e473ee1c667e2e'
+    twilio.from_number: '+12674934901' 
+    lang_code: "%kernel.project_dir%/public/lang.code.json"
+
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc. 
+
+    App\Service\TwilioService:
+        arguments:
+            $sid: '%twilio.sid%'
+            $token: '%twilio.token%'
+            $fromNumber: '%twilio.from_number%'
+            
+    App\Controller\ExportController:
+        tags: ['container.service_subscriber']
+    
+    App\Service\CodeValidationService:
+        arguments: [] 
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php' 
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

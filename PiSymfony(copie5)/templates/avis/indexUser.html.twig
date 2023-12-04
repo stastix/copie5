@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Avis{% endblock %}
+{% block h3 %}Avis{% endblock %}
+{% block h4 %}{% endblock %}
+{% block buttons %}{% endblock %}
+
+{% block body %}
+    <!-- Contact -->
+    <section class="contact py-5">
+        <div class="container review-container">
+            <div class="row">
+                <h2 class="col-9 heading text-capitalize text-left mb-sm-5 mb-4">
+                    List Review
+                </h2>
+                <a href="{{ path('app_avis_new') }}" class="col-3">
+                    <button class="btn btn-primary">Add New</button>
+                </a>
+            </div>
+            <div>
+                <div class="row">
+                    {% for avi in pagination %}
+                        <div class="col-5 mb-3">
+                            <div class="card border border-success">
+                                <div class="card-body">
+                                    <h5 class="card-title">Review User : {{ avi.id }}</h5>
+                                    <p class="card-text">
+                                        <strong class="text-muted">Auteur :
+                                            <span class="badge bg-success">{{ avi.auteur }}</span>
+                                        </strong>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong class="text-muted">Note :
+                                            <span class="text-danger">{{ avi.note }}</span>
+                                        </strong>
+                                    </p>
+                                    <p class="card-text">
+                                        <strong class="text-muted">Contenu :
+                                            <span class="badge bg-danger">{{ avi.contenu }}</span>
+                                        </strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="card border border-success">
+                            <div class="card-body">
+                                <p class="card-text">no data</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+<!-- Ajouter la navigation de pagination -->
+<div class="pagination justify-content-center mt-4">
+    {{ knp_pagination_render(pagination) }}
+</div>
+    </section>
+    <!-- //Contact -->
+{% endblock %}

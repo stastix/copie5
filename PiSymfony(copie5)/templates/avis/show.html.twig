@@ -1,0 +1,51 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}Avis Client
+{% endblock %}
+
+{% block body %}
+	<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+		<div class="container">
+			<div class="az-content-left az-content-left-components">
+				<div class="component-item">
+					<label>Tables</label>
+					<nav class="nav flex-column">
+						<a href="{{ path('app_avis_index') }}" class="nav-link active">Avis</a>
+					</nav>
+				</div>
+				<!-- component-item -->
+			</div>
+			<!-- az-content-left -->
+			<div class="az-content-body pd-lg-l-30 d-flex flex-column">
+				<div class="az-content-breadcrumb">
+					<span>Manage</span>
+					<span>Client</span>
+					<span>Review</span>
+				</div>
+				<h2 class="az-content-title">
+					Show
+
+				</h2>
+				<table class="table">
+					<tbody>
+						<tr>
+							<th>Id</th>
+							<td>{{ avi.id }}</td>
+						</tr>
+						<tr>
+							<th>Auteur</th>
+							<td>{{ avi.auteur }}</td>
+						</tr>
+						<tr>
+							<th>Contenu</th>
+							<td>{{ avi.contenu }}</td>
+						</tr>
+						<tr>
+							<th>Note</th>
+							<td>{{ avi.note }}</td>
+						</tr>
+					</tbody>
+				</table>
+
+
+			{% endblock %}

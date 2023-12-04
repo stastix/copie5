@@ -1,0 +1,407 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}Statistiques sur les reservation{% endblock %}
+
+{% block body %}
+
+
+<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+    <div class="container">
+        <div class="az-content-body pd-lg-l-40 d-flex flex-column">
+ {% set nbreservation = 0 %}
+ {% set totalkids = 0 %}
+ {% set totaladults = 0 %}
+ 
+<h1 align="left">List des reservation</h1>
+chercher by :
+<div>
+<input type="text" id="search" class="form-control" placeholder="idevent">
+</div>
+<div>
+  <input type="text" id="search2" class="form-control" placeholder="min price">
+  </div>
+<div class="table-responsive">
+    <table id="t" class="table table-bordered mg-b-0">
+
+    <thead class="thead-dark">
+        <tr>
+            <th>reservation id</th>
+            <th>client id</th>
+            <th>event id </th>
+            <th>nb adults</th>
+            <th>nb kids</th>
+            <th>montant</th>
+            <th>voir les commentaire</th>
+
+            
+        </tr>
+    </thead>
+    <tbody id="all">
+      {% set totalPrix = 0 %}
+    {% for reservation in reservations %}
+    {% set nbreservation = nbreservation +1 %} 
+        <tr>
+            <td>{{ reservation.id }}</td>
+            <td>{{ reservation.userId }}</td>
+            <td>{{ reservation.eventId}}</td>
+            <td>{{ reservation.nbAdults }}</td>
+            <td>{{ reservation.nbKids }}</td>
+            <td>{{ reservation.prixR }}$</td>
+            <td><a href="{{ path('scomments', {'id': reservation.eventId}) }}">show comments</a></td>
+
+            {% set totalkids = totalkids + reservation.nbKids %}
+            {% set totaladults = totaladults + reservation.nbAdults %}
+            {% set totalPrix = totalPrix + reservation.prixR %}
+            
+
+        </tr>
+        
+   
+    
+    {% endfor %}
+    <tr><td>le prix totale de tous les reservation est : {{totalPrix}}<td></tr>
+</tbody>
+<tbody id="searchtab" ></tbody>
+<tbody id="searchtab2" ></tbody>
+</table>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+      $("#search").keyup(function(e) {
+          var Value = $(this).val();
+        
+
+          $.ajax({
+            url: "{{ path('searchR') }}",
+              type: 'GET',
+              
+              data: {'search': Value},
+              success: function(retour) {
+                
+                if(retour){
+
+                  
+
+                      $('#t tbody#searchtab').empty();
+                      $.each(JSON.parse(retour), function(i,obj){
+                        $('#t tbody#all').hide();
+                        $('#t tbody#searchtab').append('<tr><td> '+obj.id+' </td><td> '+obj.userId+' </td><td> '+obj.eventId+' </td><td> '+obj.nbAdults+' </td><td> '+obj.nbKids+' </td><td> '+obj.prixR+' </td><td><a href="scomments/'+obj.id+'">show comments</a></td></tr>');
+
+
+                      });      }
+                      else {
+                        if (Value.trim() === '') {
+                          $('#t tbody#all').show();
+                        } else {
+                          $('#t tbody#all').hide();
+                        }
+                        $('#t tbody#searchtab2').empty();
+                        $('#t tbody#searchtab2').fadeIn('fast');
+                      }
+
+                        
+              },
+          });
+          return false;
+      });
+  });
+</script>
+<script src="{{ asset('js/jquery.cookie.js') }}"></script>
+<script>
+  $(document).ready(function() {
+      $("#search2").keyup(function(e) {
+          var Value = $(this).val();
+        
+
+          $.ajax({
+            url: "{{ path('searchR2') }}",
+              type: 'GET',
+              
+              data: {'search2': Value},
+              success: function(retour) {
+                
+                if(retour){
+
+                  
+
+                      $('#t tbody#searchtab2').empty();
+                      $.each(JSON.parse(retour), function(i,obj){
+                        $('#t tbody#all').hide();
+                        
+                        $('#t tbody#searchtab2').append('<tr><td> '+obj.id+' </td><td> '+obj.userId+' </td><td> '+obj.eventId+' </td><td> '+obj.nbAdults+' </td><td> '+obj.nbKids+' </td><td> '+obj.prixR+' </td><td><a href="scomments/'+obj.id+'">show comments</a></td></tr>');
+
+
+                      });      }
+                      else {
+                        if (Value.trim() === '') {
+                          $('#t tbody#all').show();
+                        } else {
+                          $('#t tbody#all').hide();
+                        }
+                        $('#t tbody#searchtab2').empty();
+                        $('#t tbody#searchtab2').fadeIn('fast');
+                      }
+
+                        
+              },
+          });
+          return false;
+      });
+  });
+</script>
+
+<h1 align="center"  >List des commentaire</h1>
+{% set nbc = 0 %}
+<table align="center"  border="1">
+
+   <thead>
+       <tr>
+           <th>commentaire id</th>
+           <th>userName</th>
+           <th>contex </th>
+         
+           
+       </tr>
+   </thead>
+   <tbody>
+
+   {% for reservation in commentaire %}
+   {% set nbc= nbc +1 %} 
+       <tr>
+           <td>{{ reservation.id }}</td>
+           <td>{{ reservation.userName }}</td>
+           <td>{{ reservation.context}}</td>
+         
+           
+
+       </tr>
+       
+  
+   {% else %}
+       <tr>
+           <td colspan="6">no reservation found</td>
+       </tr>
+   {% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+<div class="col-lg-8 mg-t-20 mg-lg-t-0">
+    <div class="card card-dashboard-four">
+      <div class="card-header">
+        <h6 class="card-title">stat  by me</h6>
+      </div><!-- card-header -->
+      <div class="card-body row">
+        <div class="col-md-6 d-flex align-items-center">
+          <div class="chart"><canvas id="chartDonut"></canvas></div>
+        </div><!-- col -->
+        <div class="col-md-6 col-lg-5 mg-lg-l-auto mg-t-20 mg-md-t-0">
+          <div class="az-traffic-detail-item">
+            <div>
+                <span>nb commentairer</span>
+                <span>{{ nbc}} <span>(10%)</span></span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-purple wd-25p" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div><!-- progress -->
+          </div>
+          <div class="az-traffic-detail-item">
+            <div>
+              <span>nb reservation</span>
+              <span>{{ nbreservation }} <span>()</span></span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-primary wd-20p" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+            </div><!-- progress -->
+          </div>
+          <div class="az-traffic-detail-item">
+            <div>
+              <span>nb adults</span>
+              <span>{{ totaladults }} <span>/{{ ((totaladults*100)/(totaladults+totalkids) )| slice(0, 2)}}%</span></span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-info wd-30p" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+            </div><!-- progress -->
+          </div>
+          <div class="az-traffic-detail-item">
+            <div>
+              <span>nb kids</span>
+              <span>{{ totalkids }} <span>/{{ ((totalkids*100)/(totaladults+totalkids) )| slice(0, 2)}}%</span></span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-teal wd-15p" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+            </div><!-- progress -->
+          </div>
+          <div class="az-traffic-detail-item">
+            <div>
+              <span>nb commentairer</span>
+              <span>{{ nbc}} <span>(10%)</span></span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar bg-gray-500 wd-10p" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+            </div><!-- progress -->
+          </div>
+        </div><!-- col -->
+      </div><!-- card-body -->
+    </div><!-- card-dashboard-four -->
+  </div><!-- col -->
+</div><!-- row -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  
+  <body>
+
+  
+
+    <div class="az-content az-content-dashboard">
+      <div class="container">
+        <div class="az-content-body">
+         
+
+          
+
+          <div class="row row-sm mg-b-20">
+            <div class="col-lg-7 ht-lg-100p">
+              <div class="card card-dashboard-one">
+                <div class="card-header">
+                  <div>
+                    <h6 class="card-title">Website Audience Metrics</h6>
+                    <p class="card-text">Audience to which the users belonged while on the current date range.</p>
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn active">Day</button>
+                    <button class="btn">Week</button>
+                    <button class="btn">Month</button>
+                  </div>
+                </div><!-- card-header -->
+                <div class="card-body">
+                  <div class="card-body-top">
+                    <div>
+                      <label class="mg-b-0">Users</label>
+                      <h2>13,956</h2>
+                    </div>
+                    <div>
+                      <label class="mg-b-0">Bounce Rate</label>
+                      <h2>33.50%</h2>
+                    </div>
+                    <div>
+                      <label class="mg-b-0">Page Views</label>
+                      <h2>83,123</h2>
+                    </div>
+                    <div>
+                      <label class="mg-b-0">Sessions</label>
+                      <h2>16,869</h2>
+                    </div>
+                  </div><!-- card-body-top -->
+                  <div class="flot-chart-wrapper">
+                    <div id="flotChart" class="flot-chart"></div>
+                  </div><!-- flot-chart-wrapper -->
+                </div><!-- card-body -->
+              </div><!-- card -->
+            </div><!-- col -->
+            <div class="col-lg-5 mg-t-20 mg-lg-t-0">
+              <div class="row row-sm">
+                <div class="col-sm-6">
+                  <div class="card card-dashboard-two">
+                    <div class="card-header">
+                      <h6>33.50% <i class="icon ion-md-trending-up tx-success"></i> <small>18.02%</small></h6>
+                      <p>Bounce Rate</p>
+                    </div><!-- card-header -->
+                    <div class="card-body">
+                      <div class="chart-wrapper">
+                        <div id="flotChart1" class="flot-chart"></div>
+                      </div><!-- chart-wrapper -->
+                    </div><!-- card-body -->
+                  </div><!-- card -->
+                </div><!-- col -->
+                <div class="col-sm-6 mg-t-20 mg-sm-t-0">
+                  <div class="card card-dashboard-two">
+                    <div class="card-header">
+                      <h6>86k <i class="icon ion-md-trending-down tx-danger"></i> <small>0.86%</small></h6>
+                      <p>Total Users</p>
+                    </div><!-- card-header -->
+                    <div class="card-body">
+                      <div class="chart-wrapper">
+                        <div id="flotChart2" class="flot-chart"></div>
+                      </div><!-- chart-wrapper -->
+                    </div><!-- card-body -->
+                  </div><!-- card -->
+                </div><!-- col -->
+                <div class="col-sm-12 mg-t-20">
+                  <div class="card card-dashboard-three">
+                    <div class="card-header">
+                      <p>All Sessions</p>
+                      <h6>16,869 <small class="tx-success"><i class="icon ion-md-arrow-up"></i> 2.87%</small></h6>
+                      <small>The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc.</small>
+                    </div><!-- card-header -->
+                    <div class="card-body">
+                      <div class="chart"><canvas id="chartBar5"></canvas></div>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- row -->
+            </div><!--col -->
+          </div><!-- row -->
+
+      
+
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{%  endblock %}

@@ -1,0 +1,139 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}Statistiques sur les reservation{% endblock %}
+
+{% block body %}
+
+    <div align="center">
+        {{ form_start(f) }}
+        {{ form_end(f) }}
+        <br>
+
+        <div>
+            {% for flashMessage in app.flashes('danger') %}
+                <div class="alert alert-danger">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Tableau des produits -->
+        <table class="table" border="2px">
+            <thead>
+                <tr>
+                    <th>nom</th>
+                    <th>prix</th>
+                    <th>stock</th>
+                    <th>image</th>
+                    <th>action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produit in produits %}
+                    <tr>
+                        <td>{{ produit.nom }}</td>
+                        <td>{{ produit.prixunitaire }}</td>
+                        <td>{{ produit.stock }}</td>
+                        <td>{{ produit.image }}</td>
+                        <td><a href="{{ path('produit_edit', {'id': produit.id}) }}">edit</a></td>
+                        <td><a href="{{ path('produit_delete', {'id': produit.id}) }}">delete</a></td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6">no product found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Tableau des commandes -->
+        <table class="table" border="2px">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Product ID</th>
+                    <th>Confirmed</th>
+                    <!-- Ajoutez plus de colonnes selon les propriétés de votre entité Commande -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for commande in commandes %}
+                    <tr>
+                        <td>{{ commande.userId }}</td>
+                        <td>{{ commande.productId }}</td>
+                        <td>{{ commande.Comfirmed ? 'Yes' : 'No' }}</td>
+                        <!-- Ajoutez plus de cellules en fonction des propriétés de votre entité Commande -->
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">no command found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+     <div align="center">
+        <!-- Graphique pour les commandes confirmées/non confirmées -->
+        <canvas id="ordersChart" width="400" height="400"></canvas>
+
+        <!-- Graphique pour le stock des produits -->
+        <canvas id="stockChart" width="400" height="400"></canvas>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Récupérez les données à partir des variables Symfony (remplacez-les par vos données)
+                var commandes = {{ commandes | json_encode | raw }};
+                var produits = {{ produits | json_encode | raw }};
+                // Vérifiez les données des commandes dans la console
+                console.log(commandes);
+                // Initialisez les compteurs
+                var confirmedCount = 0;
+                var unconfirmedCount = 0;
+
+                // Parcourez les commandes et comptez
+                for (var i = 0; i < commandes.length; i++) {
+                    if (commandes[i].Confirmed) {
+                        confirmedCount++;
+                    } else {
+                        unconfirmedCount++;
+                    }
+                }
+
+                // Configurer le graphique pour les commandes confirmées/non confirmées
+                var ordersCtx = document.getElementById('ordersChart').getContext('2d');
+                var ordersChart = new Chart(ordersCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Confirmed', 'Unconfirmed'],
+                        datasets: [{
+                            data: [confirmedCount, unconfirmedCount],
+                            backgroundColor: ['green', 'red']
+                        }]
+                    }
+                });
+
+                // Configurer le graphique pour le stock des produits
+                var stockCtx = document.getElementById('stockChart').getContext('2d');
+                var stockData = {
+                    labels: [],
+                    datasets: [{
+                        label: 'Stock',
+                        backgroundColor: 'blue',
+                        data: []
+                    }]
+                };
+
+                // Remplir les données du stock des produits
+                for (var j = 0; j < produits.length; j++) {
+                    stockData.labels.push(produits[j].nom);
+                    stockData.datasets[0].data.push(produits[j].stock);
+                }
+
+                var stockChart = new Chart(stockCtx, {
+                    type: 'bar',
+                    data: stockData
+                });
+            });
+        </script>
+    </div>
+{% endblock %}

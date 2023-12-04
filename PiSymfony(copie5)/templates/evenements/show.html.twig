@@ -1,0 +1,78 @@
+{% extends 'base-back.html.twig' %}
+
+{% block body %}
+
+    <h1>Liste des événements</h1>
+    <button type="button" onclick="window.location='{{ path('evenements_add') }}'">Ajouter</button>
+
+    <!-- Bouton PDF avec icône -->
+    <a href="{{ path('evenements_generate_pdf') }}" class="btn-pdf" target="_blank">
+        <button type="button" class="btn-pdf">
+            <i class="fas fa-file-pdf"></i> Télécharger en PDF
+        </button>
+    </a>
+
+    <!-- Formulaire de recherche -->
+    <form id="searchForm" action="{{ path('evenements_search_ajax') }}" method="GET" class="form-inline mt-3">
+        <div class="form-group">
+            <select id="criteria" name="criteria" class="form-control">
+                <option value="destination">Destination</option>
+                <option value="typeevenement">Type d'événement</option>
+                <option value="titre">Titre</option>
+            </select>
+        </div>
+        <div class="form-group mx-sm-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Rechercher...">
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </form>
+
+    <table class="table custom-table mt-3">
+        <thead class="thead-dark">
+            <tr>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Date de départ</th>
+                <th>Type d'événement</th>
+                <th>Guide ID</th>
+                <th>Destination</th>
+                <th>Image</th>
+                <th>Sponsor de l'événement</th>
+                <th>Prix</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="custom-table-body">
+            {% for evenement in evenements %}
+                <tr>
+                    <td>{{ evenement.titre }}</td>
+                    <td>{{ evenement.description }}</td>
+                    <td>{{ evenement.dateDepart ? evenement.dateDepart|date('Y-m-d') : '' }}</td>
+                    <td>{{ evenement.typeevenement }}</td>
+                    <td>{{ evenement.guideId }}</td>
+                    <td>{{ evenement.destination }}</td>
+                    <td>{{ evenement.image }}</td>
+                    <td>{{ evenement.sponsorevenement }}</td>
+                    <td>{{ evenement.prix }}</td>
+                    <td>
+                        <!-- Bouton d'édition -->
+                        <form class="edit-form">
+                            <a href="{{ path('evenements_edit', {'id': evenement.idevenement}) }}" class="btn btn-success btn-sm" role="button">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </form>
+                        
+                        <!-- Formulaire de suppression -->
+                        <form class="delete-form" method="POST" action="{{ path('evenements_delete', {'id': evenement.idevenement}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.idevenement) }}">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                    </td> 
+                </tr>
+                                {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

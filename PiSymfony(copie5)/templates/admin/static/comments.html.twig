@@ -1,0 +1,107 @@
+{% extends 'base-back.html.twig' %}
+
+{% block title %}coments{% endblock %}
+
+{% block body %}
+<div class="az-content pd-y-20 pd-lg-y-30 pd-xl-y-40">
+    <div class="container">
+        <div class="az-content-body pd-lg-l-40 d-flex flex-column">
+ {% set nbreservation = 0 %}
+ {% set totalkids = 0 %}
+ {% set totaladults = 0 %}
+
+
+
+
+
+
+
+<h1 align="center"  >List des commentaire</h1>
+{% set nbc = 0 %}
+<table align="center"  border="1">
+
+   <thead>
+       <tr>
+           <th>commentaire id</th>
+           <th>userName</th>
+           <th>contex </th>
+         
+           
+       </tr>
+   </thead>
+   <tbody>
+
+   {% for reservation in commentaire %}
+   {% set nbc= nbc +1 %} 
+       <tr>
+           <td>{{ reservation.id }}</td>
+           <td>{{ reservation.userName }}</td>
+           <td>{{ reservation.context}}</td>
+         
+           
+
+       </tr>
+       
+  
+   {% else %}
+       <tr>
+           <td colspan="6">no reservation found</td>
+       </tr>
+   {% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{%  endblock %}

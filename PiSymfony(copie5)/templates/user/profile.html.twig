@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}profil{% endblock %}
+{% block h3 %}Profil{% endblock %}
+{% block h4 %}{% endblock %}
+{% block buttons %}{% endblock %}
+
+{% block body %}
+<section class="contact py-5">
+    <div class="container py-lg-5 py-sm-3">
+        <h2 class="heading text-capitalize text-center mb-sm-5 mb-4"> Profile </h2>
+        <div class="row justify-content-center"> <!-- Center the form -->
+            <div class="col-lg-6 col-md-6 contact-left-form">
+                                    <div class="form-group contact-forms">
+
+    {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+    
+  </div>
+                        <div class="form-group contact-forms">
+
+      </div>
+              </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
