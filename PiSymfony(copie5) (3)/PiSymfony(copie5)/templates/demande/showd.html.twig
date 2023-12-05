@@ -1,81 +1,52 @@
+{% extends 'base-back.html.twig' %}  
+{% block body %}
 
-{%extends 'base-back.html.twig'%}  
-{%block body%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-90680653-2');
+</script>
 
-    {% block title %}
-        <title>complaints</title>
-    {% endblock %}
+<div class="container mt-4">
+    <h1>Requests List</h1>
 
-    {% block stylesheet %}
-        {% include 'admin/inc/stylesheet.html.twig' %}
-        <style>
-            /* Add custom styles for the table */
-            table {
-                max-width: 80%; /* Set a maximum width for the table */
-                margin: auto;   /* Center the table */
-            }
-        </style>
-    {% endblock %}
-
-    {% block meta %}
-        {% include 'admin/inc/meta.html.twig' %}
-    {% endblock %}
-</head>
-<body>
-
-        
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
-        {% endfor %}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-90680653-2');
-        </script>
-    
-
-        <h1>Requests List</h1>
-
-        <table class="table" border="2px">
-            <thead>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Destination</th>
+                <th>Type</th>
+                <th>Duration</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for demande in demands %}
                 <tr>
-                    <th>User Name</th>
-                    <th>Destination</th>
-                    <th>Type</th>
-                    <th>Duration</th>
-                    <th>Description</th>
-                    <th>Actions</th>
+                    <td>{{ demande.UseName.nom }}</td>
+                    <td>{{ demande.destination }}</td>
+                    <td>{{ demande.type }}</td>
+                    <td>{{ demande.duration }}</td>
+                    <td>{{ demande.description }}</td>
+                    <td>
+                        <a href="{{ path('send_sms', {'id': demande.id}) }}" class="btn btn-success btn-sm">Accept</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for demande in demands %}
-                    <tr>
-                        <td>{{ demande.UseName.nom }}</td>
-                        <td>{{ demande.destination }}</td>
-                        <td>{{ demande.type  }}</td>
-                        <td>{{ demande.duration  }}</td>
-                        <td>{{ demande.description  }}</td>
-                        <td>
-                            <a href="{{ path('send_sms', {'id': demande.id}) }}">Accept request</a>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="6">No records found</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% else %}
+                <tr>
+                    <td colspan="6">No records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-
-</body>
-</html>
 {% endblock %}

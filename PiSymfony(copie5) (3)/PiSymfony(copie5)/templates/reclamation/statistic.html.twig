@@ -1,62 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-90680653-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-90680653-2');
-    </script>
-
-    {% block title %}
-
-    <title>complaints</title>
-
- {%  endblock %}
-
-
-    {% block stylesheet %}
-
-    <style>
-            /* Add custom styles for the table */
-            table {
-                max-width: 80%; /* Set a maximum width for the table */
-                margin: auto;   /* Center the table */
-            }
-        </style>
-
-    {% include 'admin/inc/stylesheet.html.twig' %}
-
- {%  endblock %}
- {% block meta %}
-
- {% include 'admin/inc/meta.html.twig' %}
-
-{%  endblock %}
-
-
-    
-  </head>
-  <body>
-
-    {% block header %}
-
-    {% include 'admin/inc/header.html.twig' %}
-   
-   {%  endblock %}
-   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-{# Statistics block #}
-{% block statistics %}
+{% extends 'base-back.html.twig' %}
+{% block body %}
     <div class="statistics-container">
         <h2>Statistics</h2>
         <canvas id="complaintChart" width="300" height="120"></canvas>
-
     </div>
+
+    <style>
+        .statistics-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #complaintChart {
+            margin-top: 20px;
+        }
+    </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -84,20 +47,3 @@
         });
     </script>
 {% endblock %}
-
-{% block footer %}
-
-    {% include 'admin/inc/footer.html.twig' %}
-   
-   {%  endblock %}
-
-
-   
-   {% block script %}
-
-   {% include 'admin/inc/script.html.twig' %}
-  
-  {%  endblock %}
-
-  </body>
-</html>

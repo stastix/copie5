@@ -1,63 +1,16 @@
 {% extends 'base-back.html.twig' %}
-{% block body %}
 
+{% block body %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js" defer></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" defer></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (!('Notification' in window)) {
             console.log('This browser does not support desktop notifications.');
             return;
         }
 
-        if (Notification.permission === 'granted') {
-            showNotification();
-        } else if (Notification.permission !== 'denied') {
-            Notification.requestPermission().then(function(permission) {
-                if (permission === 'granted') {
-                    showNotification();
-                }
-            });
-        }
-    });
-
-    function showNotification() {
-        var urlParams = new URLSearchParams(window.location.search);
-        var message = urlParams.get('message');
-
-        if (message) {
-            var notification = new Notification(message);
-
-            notification.addEventListener('click', function() {
-                window.location.href = '{{ path("app_cartefidelite_index") }}';
-            });
-        }
-    }
-</script>
-
-<!-- header -->
-<header>
-	<div class="container">
-	</div>
-</header>
-<!-- //header -->
-
-<!-- banner -->
-<section class="banner_inner" id="home">
-	<div class="banner_inner_overlay">
-	</div>
-</section>
-
-{% block title %}
-  <h1 style="text-align: center; margin-bottom: 20px;">Loyalty Cards</h1>
-{% endblock %}
-
-<img src="{{ asset('img/loyalty-card.png') }}" alt="Loyalty Card Image" style="display: block; margin: 0 auto; margin-bottom: 20px; width: 150px; height: auto;">
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
-
-    <script>
         $(document).ready(function () {
             var dataTable = $('#dataTable').DataTable({
                 dom: 'lBfrtip',
@@ -89,16 +42,88 @@
                 sortTable(1, 'asc');
             });
         });
-           function searchById() {
+        function searchById() {
+            var offreId = prompt('Enter the ID of the offre:');
+            if (offreId) {
+                window.location.href = '{{ path("app_cartefidelite_show", { "idcarte": "__id__" }) }}'.replace('__id__', offreId);
+            }
+            }
+
+        if (Notification.permission === 'granted') {
+            showNotification();
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === 'granted') {
+                    showNotification();
+                }
+            });
+        }
+    });
+
+    function showNotification() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var message = urlParams.get('message');
+
+        if (message) {
+            var notification = new Notification(message);
+
+            notification.addEventListener('click', function () {
+                window.location.href = '{{ path("app_cartefidelite_index") }}';
+            });
+        }
+
+        function generateAndShowQRCode() {
+            var carteId = {{ cartefidelites[0].idcarte ?? 0 }};
+            var qrCodeUrl = "{{ path('generate_qr_code', {'id': '__id__'}) }}".replace('__id__', carteId);
+
+            document.getElementById('qrcode').src = qrCodeUrl;
+            document.getElementById('qrCodeModal').style.display = 'block';
+        }
+
+        function closeQRCodeModal() {
+            document.getElementById('qrCodeModal').style.display = 'none';
+        }
+    }
+</script>
+
+
+{% block title %}
+  <h1 style="text-align: center; margin-bottom: 20px;">Loyalty Cards</h1>
+{% endblock %} 
+
+<img src="{{ asset('img/loyalty-card.png') }}" alt="Loyalty Card Image" style="display: block; margin: 0 auto; margin-bottom: 20px; width: 150px; height: auto;">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <label for="etatcarteFilter">Etatcarte Filter:</label>
+        <select id="etatcarteFilter">
+            <option value="">All</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+        </select>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+        <label for="niveaucarteFilter">Niveaucarte Filter:</label>
+        <select id="niveaucarteFilter">
+            <option value="">All</option>
+            <option value="Bronze">bronze</option>
+            <option value="Silver">Silver</option>
+            <option value="Gold">Gold</option>
+        </select>
+    </div>
+
+    <div class="text-center">
+        <button class="btn btn-primary btn-lg" onclick="
         var offreId = prompt('Enter the ID of the offre:');
         if (offreId) {
             window.location.href = '{{ path("app_cartefidelite_show", { "idcarte": "__id__" }) }}'.replace('__id__', offreId);
         }
-    }
-    </script>
-    <div class="text-center">
-        <button class="btn btn-primary btn-lg" onclick="searchById()">Search by ID</button>
-        <a class="btn btn-success btn-lg" href="{{ path('app_cartefidelite_new') }}">Create New</a>
+    ">Search by ID</button>
+            <a class="btn btn-success btn-lg" href="{{ path('app_cartefidelite_new') }}">Create New</a>
     </div>
     <table class="table" id="dataTable">
         <thead>
@@ -147,26 +172,6 @@
     </table>
 
 
-    <script>
-        function generateAndShowQRCode() {
-            // Get the ID of the first carte (modify as needed based on your logic)
-            var carteId = {{ cartefidelites[0].idcarte ?? 0 }};
-            
-            // Generate the QR code URL
-            var qrCodeUrl = "{{ path('generate_qr_code', {'id': '__id__'}) }}".replace('__id__', carteId);
-
-            // Update the QR code image source
-            document.getElementById('qrcode').src = qrCodeUrl;
-
-            // Show the modal
-            document.getElementById('qrCodeModal').style.display = 'block';
-        }
-
-        function closeQRCodeModal() {
-            // Close the modal
-            document.getElementById('qrCodeModal').style.display = 'none';
-        }
-    </script>
 
 
 {% endblock %}
